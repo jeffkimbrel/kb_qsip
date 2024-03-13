@@ -43,7 +43,7 @@ class kb_qsipTest(unittest.TestCase):
         cls.scratch = cls.cfg['scratch']
         cls.callback_url = os.environ['SDK_CALLBACK_URL']
         suffix = int(time.time() * 1000)
-        cls.wsName = "test_ContigFilter_" + str(suffix)
+        cls.wsName = "test_kb_qsip_" + str(suffix)
         ret = cls.wsClient.create_workspace({'workspace': cls.wsName})  # noqa
 
     @classmethod
@@ -63,5 +63,6 @@ class kb_qsipTest(unittest.TestCase):
         #
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
+
         ret = self.serviceImpl.run_kb_qsip(self.ctx, {'workspace_name': self.wsName,
-                                                             'parameter_1': 'Hello World!'})
+                                                      'parameter_1': 'Hello World!'})

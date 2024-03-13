@@ -3,6 +3,9 @@
 import logging
 import os
 
+from .utils.qsipUtil import qsipUtil
+from kb_qsip.utils.qsipUtil import qsipUtil
+
 from installed_clients.KBaseReportClient import KBaseReport
 #END_HEADER
 
@@ -35,6 +38,8 @@ class kb_qsip:
         #BEGIN_CONSTRUCTOR
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.shared_folder = config['scratch']
+        self.config = config
+        self.config['SDK_CALLBACK_URL'] = self.callback_url
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
         #END_CONSTRUCTOR
@@ -51,15 +56,10 @@ class kb_qsip:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_kb_qsip
-        report = KBaseReport(self.callback_url)
-        report_info = report.create({'report': {'objects_created':[],
-                                                'text_message': params['parameter_1']},
-                                                'workspace_name': params['workspace_name']})
-        output = {
-            'report_name': report_info['name'],
-            'report_ref': report_info['ref'],
-        }
+        qsip_runner = qsipUtil(self.config)
+        output = qsip_runner.run(ctx, params)
         #END run_kb_qsip
+
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
@@ -67,6 +67,7 @@ class kb_qsip:
                              'output is not type dict as required.')
         # return the results
         return [output]
+    
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
