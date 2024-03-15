@@ -1,4 +1,4 @@
-FROM kbase/sdkpython:3.8.0
+FROM rocker/tidyverse:latest
 MAINTAINER KBase Developer
 # -----------------------------------------
 # In this section, you can install any system dependencies required
@@ -6,30 +6,24 @@ MAINTAINER KBase Developer
 # install line here, a git checkout to download code, or run any other
 # installation scripts.
 
-# RUN apt-get update
-
-RUN pip install --upgrade pip
-
-# install R
-RUN apt-get update -qq && apt-get -y install --no-install-recommends --no-install-suggests \
-    ca-certificates software-properties-common gnupg2 gnupg1 \
-    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 \
-    && add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
-
-RUN apt-get -y install r-base r-base-dev
-
-# install R packages
-# RUN R -e "install.packages('devtools', repos = 'http://cran.us.r-project.org')"
-# RUN R -e "install.packages('devtools')"
+# RUN R -e "install.packages('openssl')"
+# RUN R -e "install.packages('httr')"
 RUN R -e "install.packages('remotes')"
 RUN R -e "remotes::install_github('jeffkimbrel/qSIP2')"
-RUN R -e "version"
-RUN R -e "installed.packages( )"
 
+# install python and packages
+RUN apt-get update
+RUN /rocker_scripts/install_python.sh
 
-# install python packages
+# Setup virtualenv in this path
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH=${VIRTUAL_ENV}/bin:${PATH}
+RUN python3 -m venv ${VIRTUAL_ENV}
+
+RUN python -V
+
 RUN pip install pandas
-RUN pip install rpy2
+RUN pip install rpy2==3.5.12
 
 # -----------------------------------------
 
