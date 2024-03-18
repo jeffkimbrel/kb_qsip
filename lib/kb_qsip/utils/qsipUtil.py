@@ -2,9 +2,9 @@ import datetime
 import logging
 import uuid
 
-# import rpy2
-# import rpy2.robjects as robjects
-# from rpy2.robjects.packages import importr, data
+import rpy2
+import rpy2.robjects as robjects
+from rpy2.robjects.packages import importr, data
 
 
 
@@ -24,9 +24,9 @@ class qsipUtil:
     def run(self, ctx, params):
         logging.info("*****Running run method of qsipUtil")
 
-        # qsip2 = importr('qSIP2')
-        # qsip2_data = data(qsip2)
-        # logging.info(qsip2.__version__)
+        qsip2 = importr('qSIP2')
+        qsip2_data = data(qsip2)
+        logging.info(qsip2.__version__)
 
 
         return({})

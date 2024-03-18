@@ -1,40 +1,30 @@
-FROM rocker/tidyverse:latest
+FROM kbase/sdkpython:3.8.0
 MAINTAINER KBase Developer
-# -----------------------------------------
-# In this section, you can install any system dependencies required
-# to run your App.  For instance, you could place an apt-get update or
-# install line here, a git checkout to download code, or run any other
-# installation scripts.
 
-# RUN R -e "install.packages('openssl')"
-# RUN R -e "install.packages('httr')"
-RUN R -e "install.packages('remotes')"
-RUN R -e "remotes::install_github('jeffkimbrel/qSIP2')"
+RUN apt-get update -y && apt-get upgrade -y
+# System dependencies
+RUN apt-get update -qq && apt-get -y install --no-install-recommends --no-install-suggests \
+    ca-certificates software-properties-common gnupg2 gnupg1 \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 \
+    && add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' \
+    && apt-get update -qq && apt-get -y install r-base r-base-dev
 
-# install python and packages
-RUN apt-get update
-RUN /rocker_scripts/install_python.sh
+RUN apt-get install libssl-dev libcurl4-openssl-dev -y
+RUN R -e "install.packages('openssl', repos='http://cran.rstudio.com/'); if (!('openssl' %in% installed.packages())) { quit(status = 1) }"
+RUN R -e "install.packages('httr', repos='http://cran.rstudio.com/'); if (!('httr' %in% installed.packages())) { quit(status = 1) }"
+RUN R -e "install.packages('remotes', repos='http://cran.rstudio.com/'); if (!('remotes' %in% installed.packages())) { quit(status = 1) }"
+RUN R -e "remotes::install_github('jeffkimbrel/qSIP2'); if (!('qSIP2' %in% installed.packages())) { quit(status = 1) }"
 
-# Setup virtualenv in this path
-ENV VIRTUAL_ENV=/opt/venv
-ENV PATH=${VIRTUAL_ENV}/bin:${PATH}
-RUN python3 -m venv ${VIRTUAL_ENV}
-
-RUN python -V
-
-RUN pip install pandas
-RUN pip install rpy2==3.5.12
-
-# -----------------------------------------
+# Python packages
+RUN pip install --upgrade pip && pip install pandas rpy2
 
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
 RUN chmod -R a+rw /kb/module
-
 WORKDIR /kb/module
-
 RUN make all
 
-ENTRYPOINT [ "./scripts/entrypoint.sh" ]
 
+# Entrypoint
+ENTRYPOINT [ "./scripts/entrypoint.sh" ]
 CMD [ ]
