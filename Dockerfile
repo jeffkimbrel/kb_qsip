@@ -21,8 +21,9 @@ RUN pip install --upgrade pip && pip install pandas rpy2
 
 # APP specific R stuff
 
-## install ensembletools dependencies from CRAN (this won't catch failures though)
-RUN R -e "install.packages(c('broom', 'crayon', 'dplyr', 'ggrepel', 'ggridges', 'ggupset', 'glue', 'gt', 'patchwork', 'purrr', 'S7', 'scales', 'stringr', 'tidyr', 'tibble'),dependencies=TRUE, repos='http://cran.rstudio.com/')"
+## install qSIP2 dependencies from CRAN (this won't catch failures though)
+RUN R -e "install.packages(c('broom', 'crayon', 'glue', 'gt', 'patchwork', 'scales'),dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages(c('dplyr', 'ggrepel', 'ggridges', 'purrr', 'S7', 'stringr', 'tidyr'),dependencies=TRUE, repos='http://cran.rstudio.com/')"
 
 RUN R -e "remotes::install_github('jeffkimbrel/qSIP2@6edfa61'); if (!('qSIP2' %in% installed.packages())) { quit(status = 1) }"
 RUN R -e ".libPaths()"
