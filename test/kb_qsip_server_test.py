@@ -54,15 +54,19 @@ class kb_qsipTest(unittest.TestCase):
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
     def test_your_method(self):
-        # Prepare test objects in workspace if needed using
-        # self.getWsClient().save_objects({'workspace': self.getWsName(),
-        #                                  'objects': []})
-        #
-        # Run your method by
-        # ret = self.getImpl().your_method(self.getContext(), parameters...)
-        #
-        # Check returned data with
-        # self.assertEqual(ret[...], ...) or other unittest methods
 
         ret = self.serviceImpl.run_kb_qsip(self.ctx, {'workspace_name': self.wsName,
-                                                      'parameter_1': 'Hello World!'})
+                                                      'debug': True,
+                                                      'M_isotope': 'Isotope', # "M" denotes source_data
+                                                      'M_source_mat_id' : 'source',
+                                                      'M_isotopolog' : 'isotopolog',
+                                                      'S_sample_id' : "sample", # "S" denotes sample_data
+                                                      'S_source_mat_id' : "source",
+                                                      'S_gradient_position' : "Fraction",
+                                                      'S_gradient_pos_density' : "density_g_ml",
+                                                      'S_gradient_pos_amt' : "avg_16S_g_soil",
+                                                      'calculate_gradient_pos_rel_amt': True,
+                                                      'S_gradient_pos_rel_amt' : "avg_16S_g_soil",
+                                                      'F_feature_ids': "ASV", # "F" denotes feature_data
+                                                      'F_type' : "counts"})
+        
