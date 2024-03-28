@@ -29,7 +29,7 @@ class qsipUtil:
         logging.info(qsip2.__version__)
 
         # source data
-        source_df = helpers.get_source_df(params)
+        source_df = helpers.get_source_df(params,  Workspace(self.config["workspace-url"], token = ctx.get('token')))
         source_data = helpers.make_source_object(source_df, params)
         #logging.info(source_data)
 

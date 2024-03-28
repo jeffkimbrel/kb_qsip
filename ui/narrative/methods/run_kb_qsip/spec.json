@@ -11,16 +11,38 @@
     },
     "parameters": [ 
         {
-            "id": "parameter_1",
-            "optional": true,
-            "advanced": false,
-            "allow_multiple": false,
-            "default_values": [ "" ],
-            "field_type": "text",
-            "text_options": {
-                "valid_ws_types": [ ]
+            "id" : "source_data",
+            "optional" : false,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "" ],
+            "field_type" : "text",
+            "text_options" : {
+              "valid_ws_types" : [ "KBaseSets.SampleSet" ]
             }
-        }
+          },
+          {
+            "id" : "sample_data",
+            "optional" : false,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "" ],
+            "field_type" : "text",
+            "text_options" : {
+              "valid_ws_types" : [ "KBaseSets.SampleSet" ]
+            }
+          },
+          {
+            "id" : "feature_data",
+            "optional" : false,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "" ],
+            "field_type" : "text",
+            "text_options" : {
+              "valid_ws_types" : [ "KBaseMatrices.AmpliconMatrix" ]
+            }
+          }
     ],
     "behavior": {
         "service-mapping": {
@@ -35,8 +57,17 @@
                     "narrative_system_variable": "workspace_id",
                     "target_property": "workspace_id"
                 },{
-                    "input_parameter": "parameter_1",
-                    "target_property": "parameter_1"
+                    "input_parameter": "source_data",
+                    "target_property": "source_data",
+                    "target_type_transform": "resolved-ref"
+                },{
+                    "input_parameter": "sample_data",
+                    "target_property": "sample_data",
+                    "target_type_transform": "resolved-ref"
+                },{
+                    "input_parameter": "feature_data",
+                    "target_property": "feature_data",
+                    "target_type_transform": "resolved-ref"
                 }
             ],
             "output_mapping": [

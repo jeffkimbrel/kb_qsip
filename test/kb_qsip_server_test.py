@@ -57,16 +57,32 @@ class kb_qsipTest(unittest.TestCase):
 
         ret = self.serviceImpl.run_kb_qsip(self.ctx, {'workspace_name': self.wsName,
                                                       'debug': True,
-                                                      'M_isotope': 'Isotope', # "M" denotes source_data
+
+                                                      # data files
+                                                      'source_data': "72832/2/1",
+                                                      'sample_data': "72832/3/1",
+                                                      'feature_data': "72832/7/1",
+
+                                                      # "M" denotes source_data
+                                                      'M_isotope': 'Isotope', 
                                                       'M_source_mat_id' : 'source',
                                                       'M_isotopolog' : 'isotopolog',
-                                                      'S_sample_id' : "sample", # "S" denotes sample_data
+
+                                                      # "S" denotes sample_data
+                                                      'S_sample_id' : "sample", 
                                                       'S_source_mat_id' : "source",
                                                       'S_gradient_position' : "Fraction",
                                                       'S_gradient_pos_density' : "density_g_ml",
                                                       'S_gradient_pos_amt' : "avg_16S_g_soil",
                                                       'calculate_gradient_pos_rel_amt': True,
                                                       'S_gradient_pos_rel_amt' : "avg_16S_g_soil",
-                                                      'F_feature_ids': "ASV", # "F" denotes feature_data
-                                                      'F_type' : "counts"})
+
+                                                      # "F" denotes feature_data
+                                                      'F_feature_ids': "ASV", 
+                                                      'F_type' : "counts",
+
+                                                      # Analysis
+                                                      "resamples": 1000,
+                                                      "resample_success": 0.8,
+                                                      "confidence": 0.9})
         

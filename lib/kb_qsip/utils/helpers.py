@@ -4,14 +4,21 @@ import rpy2
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr, data
 
+from installed_clients.WorkspaceClient import Workspace
+from typing import Any
+
 qsip2 = importr('qSIP2')
 qsip2_data = data(qsip2)
 
 # source data
-def get_source_df(params):
+def get_source_df(params, ws_client):
     
-    if params['debug']:
+    if 'debug' in params and params['debug']:
         source_df = qsip2_data.fetch('example_source_df')['example_source_df']
+
+        ref = get_object_by_ref(params['source_data'], ws_client)
+        print(ref)
+
     else:
         # get logic to import via kbase api
         pass
@@ -32,7 +39,7 @@ def make_source_object(source_df, params):
 # sample data
 def get_sample_df(params):
     
-    if params['debug']:
+    if 'debug' in params and params['debug']:
         sample_df = qsip2_data.fetch('example_sample_df')['example_sample_df']
     else:
         # get logic to import via kbase api
@@ -69,7 +76,7 @@ def make_sample_object(sample_df, params):
 # feature data
 def get_feature_df(params):
     
-    if params['debug']:
+    if 'debug' in params and params['debug']:
         feature_df = qsip2_data.fetch('example_feature_df')['example_feature_df']
     else:
         # get logic to import via kbase api
@@ -93,3 +100,48 @@ def make_qsip_object(source_data, sample_data, feature_data):
     q = qsip2.qsip_data(source_data, sample_data, feature_data)
 
     return(q)
+
+# from combinatrix app
+# def get_info(ws_output: dict[str, Any]) -> dict[str, Any]:
+#     """Get the "infostruct" dictionary from a workspace object.
+
+#     :param ws_output: object from the workspace
+#     :type ws_output: dict[str, Any]
+#     :raises KeyError: if there is no "infostruct" key
+#     :return: contents of infostruct
+#     :rtype: dict[str, Any]
+#     """
+#     if not ws_output.get(INFO):
+#         err_msg = f"Cannot find an '{INFO}' key"
+#         raise KeyError(err_msg)
+#     return ws_output[INFO]
+
+
+# def get_upa(ws_output: dict[str, Any]) -> str:
+#     """Retrieve the UPA from a workspace infostruct.
+
+#     :param ws_output: workspace object, including the "infostruct" key/value
+#     :type ws_output: dict[str, Any]
+#     :return: KBase UPA
+#     :rtype: str
+#     """
+#     infostruct = get_info(ws_output)
+#     return f"{infostruct['wsid']}/{infostruct['objid']}/{infostruct['version']}"
+
+def get_object_by_ref(ref, ws_client):
+    # based off https://github.com/kbaseapps/kb_combinatrix/blob/0c178d4c32c8428f036c4fd236046fe9f2316e42/lib/combinatrix/fetcher.py#L70
+
+    results = ws_client.get_objects2(
+            {
+                "objects": [{"ref": ref}],
+                "ignoreErrors": 1,
+                "infostruct": 1,
+                "skip_external_system_updates": 1,
+            }
+        )["data"]
+
+    # for sample in results['samples']:
+    #     print(sample)
+
+
+    return results
