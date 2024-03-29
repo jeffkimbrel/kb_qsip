@@ -1,36 +1,46 @@
+"""Main kb_qsip code."""
+
 import datetime
 import logging
-import uuid
+import os
+from typing import Any
 
-from rpy2 import robjects
-from rpy2.robjects.packages import importr, data
-
-
-import kb_qsip.utils.helpers as helpers
-
-from installed_clients.WorkspaceClient import Workspace
 from installed_clients.KBaseReportClient import KBaseReport
+from installed_clients.WorkspaceClient import Workspace
+from rpy2.robjects.packages import data, importr
+
+from kb_qsip.utils import helpers
 
 
 class qsipUtil:
 
-    def __init__(self, config):
+    def __init__(
+        self: "qsipUtil", config: dict[str, Any], context: dict[str, Any]
+    ) -> None:
         self.config = config
+        self.context = context
+        self.token: str = context.get("token", "")
+        self.callback_url = config.get("callback_url", "")
+        if not self.token:
+            err_msg = "Auth token required to access workspace data"
+            raise RuntimeError(err_msg)
         self.timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-        self.callback_url = config["SDK_CALLBACK_URL"]
-        self.scratch = config["scratch"]
         self.kbr = KBaseReport(self.callback_url)
-        self.ws_client = Workspace(config["workspace-url"])
 
-    def run(self, ctx, params):
+    def run(self: "qsipUtil", params: dict[str, Any]) -> dict[str, Any]:
 
         qsip2 = importr("qSIP2")
         qsip2_data = data(qsip2)
         logging.info(qsip2.__version__)
 
+        # retrieve the data from the workspace, indexed by their KBase UPA
+        dataframes_by_ref = helpers.retrieve_object_dataframes(
+            params, self.config, self.token
+        )
+
         # source data
         source_df = helpers.get_source_df(
-            params, Workspace(self.config["workspace-url"], token=ctx.get("token"))
+            params, Workspace(self.config["workspace-url"], token=self.token)
         )
         source_data = helpers.make_source_object(source_df, params)
         # logging.info(source_data)

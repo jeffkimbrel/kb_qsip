@@ -2,7 +2,7 @@
 
 . /kb/deployment/user-env.sh
 
-python ./scripts/prepare_deploy_cfg.py ./deploy.cfg ./work/config.properties
+python3 ./scripts/prepare_deploy_cfg.py ./deploy.cfg ./work/config.properties
 
 if [ -f ./work/token ] ; then
   export KB_AUTH_TOKEN=$(<./work/token)
@@ -13,10 +13,9 @@ if [ $# -eq 0 ] ; then
 elif [ "${1}" = "test" ] ; then
   echo "Run Tests"
   make test
+  # sh ./test/run_tests.sh
 elif [ "${1}" = "async" ] ; then
   sh ./scripts/run_async.sh
-elif [ "${1}" = "init" ] ; then
-  echo "Initialize module"
 elif [ "${1}" = "bash" ] ; then
   bash
 elif [ "${1}" = "report" ] ; then

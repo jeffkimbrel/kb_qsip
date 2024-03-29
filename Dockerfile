@@ -1,20 +1,17 @@
-FROM kbase/sdkpython:3.8.0
+FROM rocker/tidyverse:latest
 LABEL MAINTAINER KBase Developer
 
-RUN apt-get update -y && apt-get upgrade -y
-# System dependencies
-RUN apt-get update -qq && apt-get -y install --no-install-recommends --no-install-suggests \
-    ca-certificates software-properties-common gnupg2 gnupg1 \
-    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 \
-    && add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' \
-    && apt-get update -qq && apt-get -y install r-base r-base-dev
+RUN apt-get update -y && apt-get upgrade -y && \
+    apt-get -y install --no-install-recommends --no-install-suggests \
+    ca-certificates software-properties-common gnupg2 gnupg1 python3 python3-pip uwsgi \
+    libssl-dev libcurl4-openssl-dev -y
+# && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 \
+# && add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
+# && apt-get update -qq && apt-get -y install r-base r-base-dev
 
-RUN apt-get install libssl-dev libcurl4-openssl-dev -y
 RUN R -e "install.packages('openssl', repos='http://cran.rstudio.com/'); if (!('openssl' %in% installed.packages())) { quit(status = 1) }"
 RUN R -e "install.packages('httr', repos='http://cran.rstudio.com/'); if (!('httr' %in% installed.packages())) { quit(status = 1) }"
 RUN R -e "install.packages('remotes', repos='http://cran.rstudio.com/'); if (!('remotes' %in% installed.packages())) { quit(status = 1) }"
-
-# APP specific R stuff
 
 ## install qSIP2 dependencies from CRAN (this won't catch failures though)
 RUN R -e "install.packages(c('broom', 'crayon', 'glue', 'gt', 'patchwork', 'scales'),dependencies=TRUE, repos='http://cran.rstudio.com/')"
@@ -27,7 +24,11 @@ RUN R -e ".libPaths()"
 COPY ./requirements.txt /kb/module/requirements.txt
 COPY ./requirements-test.txt /kb/module/requirements-test.txt
 WORKDIR /kb/module
+RUN apt-get install -y python3-dev libbz2-dev
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
 RUN pip install --upgrade pip && \
+    pip install rpy2 && \
     cat requirements.txt | sed -e '/^\s*#.*$/d' -e '/^\s*$/d' | xargs -n 1 pip install && \
     cat requirements-test.txt | sed -e '/^\s*#.*$/d' -e '/^\s*$/d' | xargs -n 1 pip install && \
     mkdir -p /kb/module/work && \
