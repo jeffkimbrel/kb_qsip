@@ -1,2 +1,8 @@
+.git
+.github
+.vscode
 test_local
 sdk.cfg
+Makefile
+node_modules
+*.DS_Store
