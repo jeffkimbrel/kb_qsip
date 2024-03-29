@@ -14,11 +14,6 @@ RUN R -e "install.packages('openssl', repos='http://cran.rstudio.com/'); if (!('
 RUN R -e "install.packages('httr', repos='http://cran.rstudio.com/'); if (!('httr' %in% installed.packages())) { quit(status = 1) }"
 RUN R -e "install.packages('remotes', repos='http://cran.rstudio.com/'); if (!('remotes' %in% installed.packages())) { quit(status = 1) }"
 
-
-
-# Python packages
-RUN pip install --upgrade pip && pip install pandas rpy2
-
 # APP specific R stuff
 
 ## install qSIP2 dependencies from CRAN (this won't catch failures though)
@@ -28,22 +23,22 @@ RUN R -e "install.packages(c('dplyr', 'ggrepel', 'ggridges', 'purrr', 'S7', 'str
 RUN R -e "remotes::install_github('jeffkimbrel/qSIP2@6edfa61'); if (!('qSIP2' %in% installed.packages())) { quit(status = 1) }"
 RUN R -e ".libPaths()"
 
-
-COPY ./ /kb/module
+# install python requirements
+COPY ./requirements.txt /kb/module/requirements.txt
+COPY ./requirements-test.txt /kb/module/requirements-test.txt
+WORKDIR /kb/module
 RUN pip install --upgrade pip && \
-    # install the required packages
     cat requirements.txt | sed -e '/^\s*#.*$/d' -e '/^\s*$/d' | xargs -n 1 pip install && \
-    # install packages for running tests
     cat requirements-test.txt | sed -e '/^\s*#.*$/d' -e '/^\s*$/d' | xargs -n 1 pip install && \
     mkdir -p /kb/module/work && \
-    chmod -R a+rw /kb/module && \
-    # copy the compile report to the appropriate location
-    cp compile_report.json work/ && \
-    chmod a+rx ./scripts/*.sh
+    chmod -R a+rw /kb/module
+
+COPY ./ /kb/module
 
 WORKDIR /kb/module
-RUN make all
 
+# ensure all scripts are executable
+RUN chmod +x ./scripts/*.sh && chmod +x ./test/run_tests.sh && chmod +x ./bin/*.sh
 
 # Entrypoint
 ENTRYPOINT [ "./scripts/entrypoint.sh" ]
