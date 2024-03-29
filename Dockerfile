@@ -1,5 +1,5 @@
 FROM kbase/sdkpython:3.8.0
-MAINTAINER KBase Developer
+LABEL MAINTAINER KBase Developer
 
 RUN apt-get update -y && apt-get upgrade -y
 # System dependencies
@@ -30,8 +30,17 @@ RUN R -e ".libPaths()"
 
 
 COPY ./ /kb/module
-RUN mkdir -p /kb/module/work
-RUN chmod -R a+rw /kb/module
+RUN pip install --upgrade pip && \
+    # install the required packages
+    cat requirements.txt | sed -e '/^\s*#.*$/d' -e '/^\s*$/d' | xargs -n 1 pip install && \
+    # install packages for running tests
+    cat requirements-test.txt | sed -e '/^\s*#.*$/d' -e '/^\s*$/d' | xargs -n 1 pip install && \
+    mkdir -p /kb/module/work && \
+    chmod -R a+rw /kb/module && \
+    # copy the compile report to the appropriate location
+    cp compile_report.json work/ && \
+    chmod a+rx ./scripts/*.sh
+
 WORKDIR /kb/module
 RUN make all
 
