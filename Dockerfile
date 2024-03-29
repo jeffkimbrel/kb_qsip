@@ -4,7 +4,7 @@ LABEL MAINTAINER KBase Developer
 RUN apt-get update -y && apt-get upgrade -y && \
     apt-get -y install --no-install-recommends --no-install-suggests \
     ca-certificates software-properties-common gnupg2 gnupg1 python3 python3-pip uwsgi \
-    libssl-dev libcurl4-openssl-dev -y
+    libssl-dev libcurl4-openssl-dev python3-dev libbz2-dev
 # && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 \
 # && add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
 # && apt-get update -qq && apt-get -y install r-base r-base-dev
@@ -24,20 +24,15 @@ RUN R -e ".libPaths()"
 COPY ./requirements.txt /kb/module/requirements.txt
 COPY ./requirements-test.txt /kb/module/requirements-test.txt
 WORKDIR /kb/module
-RUN apt-get install -y python3-dev libbz2-dev
-RUN ln -s /usr/bin/python3 /usr/bin/python
-
-RUN pip install --upgrade pip && \
-    pip install rpy2 && \
+RUN ln -s /usr/bin/python3 /usr/bin/python && \
+    pip install --upgrade pip && \
     cat requirements.txt | sed -e '/^\s*#.*$/d' -e '/^\s*$/d' | xargs -n 1 pip install && \
     cat requirements-test.txt | sed -e '/^\s*#.*$/d' -e '/^\s*$/d' | xargs -n 1 pip install && \
     mkdir -p /kb/module/work && \
     chmod -R a+rw /kb/module
 
 COPY ./ /kb/module
-
 WORKDIR /kb/module
-
 # ensure all scripts are executable
 RUN chmod +x ./scripts/*.sh && chmod +x ./test/run_tests.sh && chmod +x ./bin/*.sh
 
