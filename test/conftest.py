@@ -14,7 +14,7 @@ import vcr
 from combinatrix.constants import DATA, DL, FN, KEYS
 from combinatrix.fetcher import DataFetcher
 
-from lib.kb_qsip.kb_qsipImpl import kb_qsip
+# from lib.kb_qsip.kb_qsipImpl import kb_qsip
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -262,7 +262,7 @@ def data_fetcher(config: dict[str, str], context: dict[str, Any]) -> DataFetcher
     return DataFetcher(config, context)
 
 
-@pytest.fixture(scope="session")
-def qsip_app(config: dict[str, Any]) -> kb_qsip:
-    """Generate an instance of the kb_qsip impl app."""
-    return kb_qsip(config)
+# @pytest.fixture(scope="session")
+# def qsip_app(config: dict[str, Any]) -> kb_qsip:
+#     """Generate an instance of the kb_qsip impl app."""
+#     return kb_qsip(config)

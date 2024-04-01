@@ -2,7 +2,6 @@
 
 from typing import Any
 
-import pytest
 from kb_qsip.kb_qsipImpl import kb_qsip
 
 PARAMS = {

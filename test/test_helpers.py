@@ -1,12 +1,10 @@
 """Tests for the helper functions."""
 
-from __future__ import annotations
-
-from test.conftest import INVALID_DATA_FETCHER_PARAMS, paramify
+from test.conftest import paramify
 from typing import Any
 
 import pytest
-from kb_qsip.utils.helpers import retrieve_object_dataframes
+from kb_qsip.utils.helpers import retrieve_convert_objects
 
 
 @pytest.mark.parametrize(
@@ -49,7 +47,7 @@ def test_retrieve_object_dataframes_fail(
     with pytest.raises(
         ValueError, match=f"{params['missing']}_data parameter not found!"
     ):
-        retrieve_object_dataframes(params["input"], config, "token")
+        retrieve_convert_objects(params["input"], config, "token")
 
 
 @pytest.mark.parametrize(
@@ -85,4 +83,4 @@ def test_retrieve_object_dataframes_unique_fail(
         ValueError,
         match=f"Only found {params['n_found']} unique KBase objects to fetch. Check your parameters and rerun the app.",
     ):
-        retrieve_object_dataframes(params["input"], config, "token")
+        retrieve_convert_objects(params["input"], config, "token")

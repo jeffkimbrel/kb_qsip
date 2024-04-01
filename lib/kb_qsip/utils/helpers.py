@@ -14,10 +14,10 @@ qsip2 = importr("qSIP2")
 PARAM_NAMES = ["source", "sample", "feature"]
 
 
-def retrieve_object_dataframes(
+def retrieve_convert_objects(
     params: dict[str, Any], qsip_config: dict[str, Any], token: str
-) -> dict[str, DataFrame]:
-    """Retrieve the sample, source, and feature data from the KBase workspace and convert them to dataframes.
+) -> dict[str, Any]:
+    """Retrieve the sample, source, and feature data from the KBase workspace.
 
     :param params: param dictionary from app input
     :type params: dict[str, Any]
@@ -25,8 +25,8 @@ def retrieve_object_dataframes(
     :type qsip_config: dict[str, Any]
     :param token: KBase token
     :type token: str
-    :return: dictionary of dataframes keyed by KBase object ID
-    :rtype: dict[str, DataFrame]
+    :return: dictionary of datasets for each object, keyed by KBase ID
+    :rtype: dict[str, Any]
     """
     fetcher = DataFetcher(qsip_config, {"token": token})
     to_fetch = set()
@@ -43,22 +43,15 @@ def retrieve_object_dataframes(
         raise ValueError(err_msg)
 
     fetched_data = fetcher.fetch_objects_by_ref(list(to_fetch))
-    converted_data = convert_data(fetched_data)
-
-    # these can all be converted into dataframes
-    dataframes: dict[str, DataFrame] = {}
-    for ref in converted_data:
-        dataframes[ref] = DataFrame(converted_data[ref]["dict_list"])
-
-    return dataframes
+    return convert_data(fetched_data)
 
 
 def retrieve_object_dataframes_from_qsip2_data(
     params: dict[str, Any]
-) -> dict[str, DataFrame]:
+) -> dict[str, RS4]:
     """Retrieve sample data from the R qsip2 package and save it as a dataframe."""
     qsip2_data: PackageData = data(qsip2)
-    dataframes: dict[str, DataFrame] = {}
+    dataframes: dict[str, RS4] = {}
     for src in PARAM_NAMES:
         # get the UPA of the input data
         upa = params.get(f"{src}_data")
@@ -68,7 +61,7 @@ def retrieve_object_dataframes_from_qsip2_data(
     return dataframes
 
 
-def make_source_object(source_df: DataFrame, params: dict[str, Any]) -> RS4:
+def make_source_object(source_df: DataFrame | RS4, params: dict[str, Any]) -> RS4:
 
     # validation checks are all run inside qSIP2 R package
     return qsip2.qsip_source_data(
@@ -79,7 +72,7 @@ def make_source_object(source_df: DataFrame, params: dict[str, Any]) -> RS4:
     )
 
 
-def make_sample_object(sample_df: DataFrame, params: dict[str, Any]) -> RS4:
+def make_sample_object(sample_df: DataFrame | RS4, params: dict[str, Any]) -> RS4:
 
     if params["calculate_gradient_pos_rel_amt"]:
 
@@ -106,7 +99,7 @@ def make_sample_object(sample_df: DataFrame, params: dict[str, Any]) -> RS4:
 
 
 # feature data
-def make_feature_object(feature_df: DataFrame, params: dict[str, Any]) -> RS4:
+def make_feature_object(feature_df: DataFrame | RS4, params: dict[str, Any]) -> RS4:
 
     # validation checks are all run inside qSIP2 R package
     return qsip2.qsip_feature_data(
@@ -116,7 +109,7 @@ def make_feature_object(feature_df: DataFrame, params: dict[str, Any]) -> RS4:
 
 # qsip object
 def make_qsip_object(
-    dataframes: dict[str, DataFrame],
+    dataframes: dict[str, DataFrame | RS4],
     params: dict[str, Any],
 ) -> RS4:
 

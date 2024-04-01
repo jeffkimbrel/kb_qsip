@@ -4,6 +4,8 @@ import logging
 from typing import Any
 
 from installed_clients.KBaseReportClient import KBaseReport
+from pandas import DataFrame
+from rpy2.robjects.methods import RS4
 
 from kb_qsip.utils import helpers
 
@@ -27,7 +29,6 @@ class QsipUtil:
         # if not self.callback_url:
         #     err_msg = "SDK_CALLBACK_URL env var required to make KBase report"
         #     raise RuntimeError(err_msg)
-
         # self.kbr = KBaseReport(self.callback_url)
 
     def run(self: "QsipUtil", params: dict[str, Any]):
@@ -41,14 +42,21 @@ class QsipUtil:
         :rtype: ???
         """
         if "debug" in params and params["debug"]:
-            dataframes_by_ref = helpers.retrieve_object_dataframes_from_qsip2_data(
-                params
+            dataframes_by_ref: dict[str, DataFrame | RS4] = (
+                helpers.retrieve_object_dataframes_from_qsip2_data(params)
             )
+            # convert these
         else:
             # retrieve the data from the workspace, indexed by their KBase UPA
-            dataframes_by_ref = helpers.retrieve_object_dataframes(
+            converted_data = helpers.retrieve_convert_objects(
                 params, self.config, self.token
             )
+            dataframes_by_ref: dict[str, DataFrame | RS4] = {}
+            # these can all be converted into dataframes
+            for ref in converted_data:
+                dataframes_by_ref[ref] = DataFrame(converted_data[ref]["dict_list"])
+
+            ## TODO: CONVERT TO RS4 format!
 
         # qsip object
         qsip_object = helpers.make_qsip_object(dataframes_by_ref, params)
