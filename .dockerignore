@@ -1,2 +1,10 @@
+.git
+.github
+htmlcov
+.pytest_cache
+__pycache__
 test_local
 sdk.cfg
+node_modules
+*.DS_Store
+combinatrix

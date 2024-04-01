@@ -1,0 +1,6 @@
+id,name,bac16srrna_cn_dry_g_whole,bac16srrna_cn_wet_g_whole,enigma:replicate,incubation_time_days,isotope,isotopolog,isotopolog_approach,isotopolog_atom_pos,isotopolog_label,oxygen_isotope,plot,samp_vol_we_dna_ext,save_date,site,temp_trt,type,user,user_sample_code,version
+14O.14W-unique-id,14O.14W,19600000000,4640000000,14,28,14O,962,single,1S/H2O/h1H2/i1+2,isotopically labeled,14O,14W,10 gram,1705694813998,4,warmed,BioReplicate,ialarmedalien,APS4.14W.TP2.14O,1
+16O.16C-unique-id,16O.16C,8920000000,2110000000,16,28,18O,962,single,1S/H2O/h1H2,natural abundance,16O,16C,10 gram,1705694813028,4,control,BioReplicate,ialarmedalien,APS4.16C.TP2.16O,1
+16O.16W-unique-id,16O.16W,10400000000,2470000000,16,28,18O,962,single,1S/H2O/h1H2,natural abundance,16O,16W,10 gram,1705694813408,4,warmed,BioReplicate,ialarmedalien,APS4.16W.TP2.16O,1
+18O.18C-unique-id,18O.18C,14500000000,3440000000,18,28,18O,962,single,1S/H2O/h1H2/i1+2,isotopically labeled,18O,18C,10 gram,1705694813615,4,control,BioReplicate,ialarmedalien,APS4.18C.TP2.18O,1
+20O.20W-unique-id,20O.20W,19600000000,4640000000,20,28,20O,962,single,1S/H2O/h1H2/i1+2,isotopically labeled,20O,20W,10 gram,1705694813998,4,warmed,BioReplicate,ialarmedalien,APS4.14W.TP2.20O,1

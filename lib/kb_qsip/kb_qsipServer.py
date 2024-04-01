@@ -17,7 +17,10 @@ from jsonrpcbase import JSONRPCService, InvalidParamsError, KeywordError, \
 from jsonrpcbase import ServerError as JSONServerError
 
 from biokbase import log
-from kb_qsip.authclient import KBaseAuth as _KBaseAuth
+try:
+    from kb_qsip.authclient import KBaseAuth as _KBaseAuth
+except ImportError:
+    from installed_clients.authclient import KBaseAuth as _KBaseAuth   
 
 try:
     from ConfigParser import ConfigParser
@@ -48,6 +51,7 @@ def get_config():
     for nameval in config.items(get_service_name() or 'kb_qsip'):
         retconfig[nameval[0]] = nameval[1]
     return retconfig
+
 
 config = get_config()
 
@@ -132,12 +136,6 @@ class JSONRPCServiceCustom(JSONRPCService):
         debugging purposes.
         """
         rdata = jsondata
-        # we already deserialize the json string earlier in the server code, no
-        # need to do it again
-#        try:
-#            rdata = json.loads(jsondata)
-#        except ValueError:
-#            raise ParseError
 
         # set some default values for error handling
         request = self._get_default_vals()
@@ -487,6 +485,7 @@ class Application(object):
                         60)
         return "%s%+02d:%02d" % (dtnow.isoformat(), hh, mm)
 
+
 application = Application()
 
 # This is the uwsgi application dictionary. On startup uwsgi will look
@@ -598,6 +597,7 @@ def process_async_cli(input_file_path, output_file_path, token):
         f.write(json.dumps(resp, cls=JSONObjectEncoder))
     return exit_code
 
+
 if __name__ == "__main__":
     if (len(sys.argv) >= 3 and len(sys.argv) <= 4 and
             os.path.isfile(sys.argv[1])):
@@ -627,7 +627,3 @@ if __name__ == "__main__":
             assert False, "unhandled option"
 
     start_server(host=host, port=port)
-#    print("Listening on port %s" % port)
-#    httpd = make_server( host, port, application)
-#
-#    httpd.serve_forever()
