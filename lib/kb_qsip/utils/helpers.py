@@ -1,14 +1,15 @@
 """General helper functions for kb_qsip."""
 
+import logging
 from typing import Any
 
 from combinatrix.converter import convert_data
 from combinatrix.fetcher import DataFetcher
 from pandas import DataFrame
-from rpy2.robjects.packages import data, importr
+from rpy2.robjects.methods import RS4
+from rpy2.robjects.packages import PackageData, data, importr
 
 qsip2 = importr("qSIP2")
-qsip2_data = data(qsip2)
 
 PARAM_NAMES = ["source", "sample", "feature"]
 
@@ -24,14 +25,9 @@ def retrieve_object_dataframes(
     :type qsip_config: dict[str, Any]
     :param token: KBase token
     :type token: str
-    :raises KeyError: _description_
-    :raises RuntimeError: _description_
     :return: dictionary of dataframes keyed by KBase object ID
     :rtype: dict[str, DataFrame]
     """
-    # 'source_data': "72832/2/1",
-    # 'sample_data': "72832/3/1",
-    # 'feature_data': "72832/7/1",
     fetcher = DataFetcher(qsip_config, {"token": token})
     to_fetch = set()
     for src in PARAM_NAMES:
@@ -50,7 +46,6 @@ def retrieve_object_dataframes(
     converted_data = convert_data(fetched_data)
 
     # these can all be converted into dataframes
-
     dataframes: dict[str, DataFrame] = {}
     for ref in converted_data:
         dataframes[ref] = DataFrame(converted_data[ref]["dict_list"])
@@ -58,53 +53,33 @@ def retrieve_object_dataframes(
     return dataframes
 
 
-# source data
-def get_source_df(params, ws_client):
+def retrieve_object_dataframes_from_qsip2_data(
+    params: dict[str, Any]
+) -> dict[str, DataFrame]:
+    """Retrieve sample data from the R qsip2 package and save it as a dataframe."""
+    qsip2_data: PackageData = data(qsip2)
+    dataframes: dict[str, DataFrame] = {}
+    for src in PARAM_NAMES:
+        # get the UPA of the input data
+        upa = params.get(f"{src}_data")
+        # retrieve the corresponding data from qsip2_data and save it to a dictionary
+        dataframes[upa] = qsip2_data.fetch(f"example_{src}_df")[f"example_{src}_df"]
 
-    if "debug" in params and params["debug"]:
-        source_df = qsip2_data.fetch("example_source_df")["example_source_df"]
-
-        # AJ... make df (either csv in scratch, or pandas df) from KBasesets.Sampleset
-        ref = get_object_by_ref(params["source_data"], ws_client)
-        # print(ref)
-        # converted = convert_samples(ref)
-        # print(converted)
-
-    else:
-        # get logic to import via kbase api
-        pass
-
-    return source_df
+    return dataframes
 
 
-def make_source_object(source_df, params):
+def make_source_object(source_df: DataFrame, params: dict[str, Any]) -> RS4:
 
     # validation checks are all run inside qSIP2 R package
-    source_data = qsip2.qsip_source_data(
+    return qsip2.qsip_source_data(
         source_df,
         isotope=params["M_isotope"],
         source_mat_id=params["M_source_mat_id"],
         isotopolog=params["M_isotopolog"],
     )
 
-    return source_data
 
-
-# sample data
-def get_sample_df(params):
-
-    if "debug" in params and params["debug"]:
-        sample_df = qsip2_data.fetch("example_sample_df")["example_sample_df"]
-
-        # AJ... make df (either csv in scratch, or pandas df) from KBasesets.Sampleset
-    else:
-        # get logic to import via kbase api
-        pass
-
-    return sample_df
-
-
-def make_sample_object(sample_df, params):
+def make_sample_object(sample_df: DataFrame, params: dict[str, Any]) -> RS4:
 
     if params["calculate_gradient_pos_rel_amt"]:
 
@@ -119,7 +94,7 @@ def make_sample_object(sample_df, params):
         params["S_gradient_pos_rel_amt"] = "gradient_pos_rel_amt"
 
     # validation checks are all run inside qSIP2 R package
-    sample_data = qsip2.qsip_sample_data(
+    return qsip2.qsip_sample_data(
         sample_df,
         sample_id=params["S_sample_id"],
         source_mat_id=params["S_source_mat_id"],
@@ -129,36 +104,30 @@ def make_sample_object(sample_df, params):
         gradient_pos_rel_amt=params["S_gradient_pos_rel_amt"],
     )
 
-    return sample_data
-
 
 # feature data
-def get_feature_df(params):
-
-    if "debug" in params and params["debug"]:
-        feature_df = qsip2_data.fetch("example_feature_df")["example_feature_df"]
-
-        # AJ... make df (either csv in scratch, or pandas df) from KBaseMatrices.AmpliconMatrix
-
-    else:
-        # get logic to import via kbase api
-        pass
-
-    return feature_df
-
-
-def make_feature_object(feature_df, params):
+def make_feature_object(feature_df: DataFrame, params: dict[str, Any]) -> RS4:
 
     # validation checks are all run inside qSIP2 R package
-    feature_data = qsip2.qsip_feature_data(
+    return qsip2.qsip_feature_data(
         feature_df, feature_id=params["F_feature_ids"], type=params["F_type"]
     )
 
-    return feature_data
-
 
 # qsip object
-def make_qsip_object(source_data, sample_data, feature_data):
+def make_qsip_object(
+    dataframes: dict[str, DataFrame],
+    params: dict[str, Any],
+) -> RS4:
+
+    source_data = make_source_object(dataframes[params["source_data"]], params)
+    # logging.info(source_data)
+
+    sample_data = make_sample_object(dataframes[params["sample_data"]], params)
+    # logging.info(sample_data)
+
+    feature_data = make_feature_object(dataframes[params["feature_data"]], params)
+    # logging.info(feature_data)
 
     # validation checks are all run inside qSIP2 R package
     return qsip2.qsip_data(source_data, sample_data, feature_data)

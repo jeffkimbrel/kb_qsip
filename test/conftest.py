@@ -26,15 +26,49 @@ CONFIG_FILE = os.environ.get(
 TOKEN = os.environ.get("KB_AUTH_TOKEN", "fake_token")
 SDK_CALLBACK_URL = os.environ.get("SDK_CALLBACK_URL")
 
+TEST_DATA = {
+    "source_data": "72832/2/1",
+    "sample_data": "72832/3/1",
+    "feature_data": "72832/7/1",
+}
+
 # These refs are all on prod.
 TEST_UPA = {
     "SAMPLESET_A": "72724/4/1",
     "SAMPLESET_B": "72724/5/1",
     "AMPLICON": "72724/11/1",
-    "WRONG_TYPE": "167844/79/1",
     "INVALID_A": "1/2/3",
     "INVALID_B": "4/5/6",
 }
+
+
+PARAMS_BASE = {
+    "workspace_id": "some_workspace_id",
+    # data files
+    "source_data": "72832/2/1",
+    "sample_data": "72832/3/1",
+    "feature_data": "72832/7/1",
+    # "M" denotes source_data
+    "M_isotope": "Isotope",
+    "M_source_mat_id": "source",
+    "M_isotopolog": "isotopolog",
+    # "S" denotes sample_data
+    "S_sample_id": "sample",
+    "S_source_mat_id": "source",
+    "S_gradient_position": "Fraction",
+    "S_gradient_pos_density": "density_g_ml",
+    "S_gradient_pos_amt": "avg_16S_g_soil",
+    "calculate_gradient_pos_rel_amt": True,
+    "S_gradient_pos_rel_amt": "avg_16S_g_soil",
+    # "F" denotes feature_data
+    "F_feature_ids": "ASV",
+    "F_type": "counts",
+    # Analysis
+    "resamples": 1000,
+    "resample_success": 0.8,
+    "confidence": 0.9,
+}
+
 
 INVALID_DATA_FETCHER_PARAMS = [
     pytest.param([None, None], id="two_nones"),
@@ -44,10 +78,6 @@ INVALID_DATA_FETCHER_PARAMS = [
     pytest.param([{"kbase-endpoint": None}, {"token": "whatever"}], id="no_endpt"),
     pytest.param([{"kbase-endpoint": ""}, {"token": "whatever"}], id="empty_endpt"),
 ]
-
-# valid joins:
-# sampleset_a.source_mat_id == sampleset_b.name
-# sampleset_a.name = matrix.column_id
 
 ERRORS = {
     "samples_node_tree_0": "12345/4/0: incorrect number of sample node trees for sample e2114bfa-5716-4e70-ad17-e97c35120b5a, 16O.16C",
@@ -234,4 +264,5 @@ def data_fetcher(config: dict[str, str], context: dict[str, Any]) -> DataFetcher
 
 @pytest.fixture(scope="session")
 def qsip_app(config: dict[str, Any]) -> kb_qsip:
+    """Generate an instance of the kb_qsip impl app."""
     return kb_qsip(config)

@@ -3,10 +3,7 @@
 import logging
 import os
 
-from .utils.qsipUtil import qsipUtil
-from kb_qsip.utils.qsipUtil import qsipUtil
-
-from installed_clients.KBaseReportClient import KBaseReport
+from kb_qsip.utils.qsip_util import QsipUtil
 
 # END_HEADER
 
@@ -56,7 +53,7 @@ class kb_qsip:
         # ctx is the context object
         # return variables are: output
         # BEGIN run_kb_qsip
-        qsip_runner = qsipUtil(self.config, ctx)
+        qsip_runner = QsipUtil(self.config, ctx)
         output = qsip_runner.run(params)
         # END run_kb_qsip
 

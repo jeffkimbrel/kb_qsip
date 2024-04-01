@@ -90,9 +90,10 @@ class DataFetcher:
         """
         # fetch the data sources from the workspace
         # results are in the same order as the input
+        sorted_ref_list = sorted(ref_list)
         ws_output = self.ws_client.get_objects2(
             {
-                "objects": [{"ref": ref} for ref in ref_list],
+                "objects": [{"ref": ref} for ref in sorted_ref_list],
                 "ignoreErrors": 1,
                 "infostruct": 1,
                 "skip_external_system_updates": 1,
@@ -107,7 +108,9 @@ class DataFetcher:
         # check for missing results
         if not all(results):
             not_found = [
-                item[0] for item in zip(ref_list, results, strict=True) if not item[1]
+                item[0]
+                for item in zip(sorted_ref_list, results, strict=True)
+                if not item[1]
             ]
             err_msg = f"The following KBase objects could not be retrieved: {', '.join(not_found)}"
             raise ValueError(err_msg)
