@@ -1,7 +1,7 @@
 """Tests for the data fetching code."""
 
 import logging
-from test.conftest import INVALID_DATA_FETCHER_PARAMS, TEST_UPA, paramify
+from test.conftest import AMP, INVALID_DATA_FETCHER_PARAMS, SSA, SSB, TEST_UPA, paramify
 from test.conftest import body_match_vcr as vcr
 from typing import Any
 
@@ -35,7 +35,7 @@ def test_init(param: list[Any]) -> None:
                 "id": "all_missing",
             },
             {
-                "ref_list": [TEST_UPA["INVALID_A"], TEST_UPA["AMPLICON"]],
+                "ref_list": [TEST_UPA["INVALID_A"], TEST_UPA[AMP]],
                 "missing": TEST_UPA["INVALID_A"],
                 "id": "one_missing",
             },
@@ -60,24 +60,24 @@ def test_fetch_objects_by_ref_missing_items(
     paramify(
         [
             {
-                "ref_list": [TEST_UPA["AMPLICON"]],
+                "ref_list": [TEST_UPA[AMP]],
                 "sample_data_expected": [],
                 "id": "no_sampleset",
             },
             {
-                "ref_list": [TEST_UPA["SAMPLESET_A"]],
-                "sample_data_expected": [TEST_UPA["SAMPLESET_A"]],
+                "ref_list": [TEST_UPA[SSA]],
+                "sample_data_expected": [TEST_UPA[SSA]],
                 "id": "single_sampleset",
             },
             {
                 "ref_list": [
-                    TEST_UPA["AMPLICON"],
-                    TEST_UPA["SAMPLESET_A"],
-                    TEST_UPA["SAMPLESET_B"],
+                    TEST_UPA[AMP],
+                    TEST_UPA[SSA],
+                    TEST_UPA[SSB],
                 ],
                 "sample_data_expected": [
-                    TEST_UPA["SAMPLESET_A"],
-                    TEST_UPA["SAMPLESET_B"],
+                    TEST_UPA[SSA],
+                    TEST_UPA[SSB],
                 ],
                 "id": "multi_sampleset",
             },

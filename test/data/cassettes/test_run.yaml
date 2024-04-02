@@ -2,7 +2,7 @@ interactions:
 - request:
     body: '{"method": "Workspace.get_objects2", "params": [{"objects": [{"ref": "72724/19/1"},
       {"ref": "72724/21/1"}, {"ref": "72724/23/1"}], "ignoreErrors": 1, "infostruct":
-      1, "skip_external_system_updates": 1}], "version": "1.1", "id": "7245730971983082"}'
+      1, "skip_external_system_updates": 1}], "version": "1.1", "id": "26115730775781953"}'
     headers:
       Accept:
       - '*/*'
@@ -11,7 +11,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '247'
+      - '248'
       User-Agent:
       - python-requests/2.31.0
     method: POST
@@ -33,7 +33,7 @@ interactions:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 859b55f039af24ee-SJC
+      - 86e14f6a2c86f967-SJC
       Connection:
       - keep-alive
       Content-Encoding:
@@ -41,7 +41,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 23 Feb 2024 00:26:09 GMT
+      - Tue, 02 Apr 2024 13:54:19 GMT
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -371,7 +371,7 @@ interactions:
         {"value": 7211543545}, "id": {"value": "20O.20W.9-unique-id"}, "target_gene":
         {"value": "20S"}, "gradient_pos_rel_amnt": {"value": 36.79358951}}, "source_meta":
         [{"key": "sample_template", "skey": "sample_template", "svalue": {"value":
-        "KBASE"}}]}], "save_date": 1708645505112, "version": 1}]], "id": "48c10794-9218-4b43-9482-07aa97ed33b4"}'
+        "KBASE"}}]}], "save_date": 1708645505112, "version": 1}]], "id": "37c01bf6-16c9-4dfa-8e16-10ec4da078e0"}'
     headers:
       Access-Control-Allow-Headers:
       - authorization
@@ -380,7 +380,7 @@ interactions:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 859b55f32e46fa7e-SJC
+      - 86e14f6b6a2e7ae0-SJC
       Connection:
       - keep-alive
       Content-Encoding:
@@ -388,7 +388,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 23 Feb 2024 00:26:10 GMT
+      - Tue, 02 Apr 2024 13:54:20 GMT
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -499,7 +499,7 @@ interactions:
         "source_meta": [{"key": "enigma:replicate", "skey": "enigma:replicate", "svalue":
         {"value": 20}}, {"key": "sample_template", "skey": "sample_template", "svalue":
         {"value": "KBASE"}}]}], "save_date": 1708645800226, "version": 1}]], "id":
-        "51326477-6022-4776-8434-ae7e1bb777f4"}'
+        "578fe726-c5a5-474e-95a7-3bc656400a19"}'
     headers:
       Access-Control-Allow-Headers:
       - authorization
@@ -508,7 +508,7 @@ interactions:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 859b55f8fe60f96f-SJC
+      - 86e14f712f0efa52-SJC
       Connection:
       - keep-alive
       Content-Encoding:
@@ -516,7 +516,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 23 Feb 2024 00:26:11 GMT
+      - Tue, 02 Apr 2024 13:54:21 GMT
       Server:
       - cloudflare
       Strict-Transport-Security:

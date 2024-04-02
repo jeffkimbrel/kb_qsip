@@ -14,8 +14,6 @@ import vcr
 from combinatrix.constants import DATA, DL, FN, KEYS
 from combinatrix.fetcher import DataFetcher
 
-# from lib.kb_qsip.kb_qsipImpl import kb_qsip
-
 if TYPE_CHECKING:
     from collections.abc import Callable
 
@@ -32,11 +30,14 @@ TEST_DATA = {
     "feature_data": "72832/7/1",
 }
 
-# These refs are all on prod.
+SSA = "sampleset_a"
+SSB = "sampleset_b"
+AMP = "amplicons"
+# These refs are all on appdev.
 TEST_UPA = {
-    "SAMPLESET_A": "72724/4/1",
-    "SAMPLESET_B": "72724/5/1",
-    "AMPLICON": "72724/11/1",
+    SSA: "72724/21/1",
+    SSB: "72724/19/1",
+    AMP: "72724/23/1",
     "INVALID_A": "1/2/3",
     "INVALID_B": "4/5/6",
 }
@@ -260,9 +261,3 @@ def data_fetcher(config: dict[str, str], context: dict[str, Any]) -> DataFetcher
     :rtype: DataFetcher
     """
     return DataFetcher(config, context)
-
-
-# @pytest.fixture(scope="session")
-# def qsip_app(config: dict[str, Any]) -> kb_qsip:
-#     """Generate an instance of the kb_qsip impl app."""
-#     return kb_qsip(config)
