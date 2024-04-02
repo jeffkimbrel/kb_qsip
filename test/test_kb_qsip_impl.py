@@ -33,7 +33,8 @@ PARAMS = {
 }
 
 
-def test_run_kb_qsip(qsip_app: kb_qsip, context: dict[str, Any]) -> None:
+def test_run_kb_qsip(config: dict[str, Any], context: dict[str, Any]) -> None:
     """Basic run test."""
+    qsip_app = kb_qsip(config)
     output = qsip_app.run_kb_qsip(context, PARAMS)
     assert output == {}
