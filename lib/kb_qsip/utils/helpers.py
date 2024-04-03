@@ -107,7 +107,7 @@ def make_sample_object(sample_df: DataFrame | RS4, params: dict[str, Any]) -> RS
         source_mat_id=params["S_source_mat_id"],
         gradient_position=params["S_gradient_position"],
         gradient_pos_density=params["S_gradient_pos_density"],
-        gradient_pos_amt=params["S_gradient_pos_amt"],
+        gradient_pos_amt=params["S_gradient_pos_amt"].lower(), # also convert to lower case for some reason
         gradient_pos_rel_amt=params["S_gradient_pos_rel_amt"],
     )
 
