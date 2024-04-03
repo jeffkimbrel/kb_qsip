@@ -27,6 +27,7 @@ PARAMS = {
     #"F_feature_ids": "row_id",
     "F_type": "relative",
     # Analysis
+    "groups": "TIME",
     "resamples": 1000,
     "resample_success": 0.8,
     "confidence": 0.9,
