@@ -28,7 +28,7 @@ class QsipUtil:
         self.scratch = config['scratch']
         self.context = context
 
-        self.callback_url = config['SDK_CALLBACK_URL']
+        self.callback_url = config['callback_url']
         self.kbr = KBaseReport(self.callback_url)
 
         self.token: str = context.get("token", "")
