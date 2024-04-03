@@ -28,6 +28,7 @@ PARAMS = {
     "F_type": "relative",
     # Analysis
     "groups": "TIME",
+    # these may come in as text and so need to be converted to numeric
     "resamples": 1000,
     "resample_success": 0.8,
     "confidence": 0.9,

@@ -1,9 +1,13 @@
 """Main kb_qsip code."""
 
 import logging
+import uuid
+import os
+
 from typing import Any
 
 from installed_clients.KBaseReportClient import KBaseReport
+
 from pandas import DataFrame
 
 from rpy2 import robjects
@@ -21,6 +25,7 @@ class QsipUtil:
     ) -> None:
         """Initialise the qsip app."""
         self.config = config
+        self.scratch = config['scratch']
         self.context = context
 
         self.token: str = context.get("token", "")
@@ -64,10 +69,37 @@ class QsipUtil:
                         DataFrame(converted_data[ref]["dict_list"])
                     )
 
+
+        # make scratch_directory
+        output_directory = os.path.join(self.scratch, str(uuid.uuid4()))
+        os.mkdir(output_directory)
+
         # qsip object
         qsip_object = helpers.make_qsip_object(dataframes_by_ref, params)
-        print(qsip_object)
 
         # do whatever to q
+        qsip_object = helpers.run_feature_filter(qsip_object, params)
+        qsip_object = helpers.run_resampling(qsip_object, params)
+        qsip_object = helpers.run_EAF_calculations(qsip_object, params)
 
-        return {}
+        eaf_summary = helpers.summarize_EAF_values(qsip_object, params)
+        helpers.write_EAF_summary(eaf_summary, output_directory)
+
+        # plots
+        helpers.plot_source_wads(qsip_object, output_directory, params)
+        helpers.plot_filter_results(qsip_object, output_directory)
+        
+
+        report_params = {
+            'message': '',
+            'html_links': [],
+            'direct_html_link_index': 0,
+            'objects_created': [],
+            'workspace_name': params['workspace_name'],
+            'report_object_name': f'qsip_{uuid.uuid4()}'}
+
+        report_output = self.kbr.create_extended_report(report_params)
+
+        return {'report_name': report_output['name'],
+                'report_ref': report_output['ref']}
+                

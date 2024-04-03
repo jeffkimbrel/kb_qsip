@@ -1,14 +1,18 @@
 """General helper functions for kb_qsip."""
 
 import logging
+import os
 from typing import Any
 
 from combinatrix.converter import convert_data
 from combinatrix.fetcher import DataFetcher
 from pandas import DataFrame
+import rpy2.robjects as robjects
 from rpy2.robjects.methods import RS4
 from rpy2.robjects.packages import PackageData, data, importr
 from rpy2.robjects import rl
+from rpy2.robjects import pandas2ri
+from rpy2.robjects.lib import ggplot2
 
 qsip2 = importr("qSIP2")
 baseR = importr('base')
@@ -142,3 +146,69 @@ def make_qsip_object(
 
     # validation checks are all run inside qSIP2 R package
     return qsip2.qsip_data(source_data, sample_data, feature_data)
+
+
+def run_feature_filter(qsip_object: RS4, params: dict[str, Any]) -> RS4:
+    qsip_object = qsip2.run_feature_filter(qsip_object,
+                   unlabeled_source_mat_ids = qsip2.get_all_by_isotope(qsip_object, rl("'16O'")),
+                   labeled_source_mat_ids = qsip2.get_all_by_isotope(qsip_object, rl("'18O'")),
+                   min_unlabeled_sources = 1,
+                   min_labeled_sources = 1,
+                   min_unlabeled_fractions = 1,
+                   min_labeled_fractions = 1)
+    
+    return qsip_object
+
+def run_resampling(qsip_object: RS4, params: dict[str, Any]) -> RS4:
+
+    # TODO verify params["resamples"] is an int
+
+    qsip_object = qsip2.run_resampling(qsip_object,
+                                       resamples = params["resamples"],
+                                        with_seed = 14,
+                                        allow_failures = True,
+                                        progress = False)
+    
+    return qsip_object
+
+def run_EAF_calculations(qsip_object: RS4, params: dict[str, Any]) -> RS4:
+    qsip_object = qsip2.run_EAF_calculations(qsip_object)
+    
+    return qsip_object
+
+def summarize_EAF_values(qsip_object: RS4, params: dict[str, Any]) -> DataFrame:
+    # TODO verify params["confidence"] is a float between 0-1
+
+    eaf_summary = qsip2.summarize_EAF_values(qsip_object, 
+                                             confidence = params["confidence"])
+    
+    with (robjects.default_converter + pandas2ri.converter).context():
+        pd_EAF_summary = robjects.conversion.get_conversion().rpy2py(eaf_summary)
+
+    return(pd_EAF_summary)
+    
+def write_EAF_summary(eaf_summary: DataFrame, output_directory: str):
+
+    eaf_summary.to_csv(os.path.join(output_directory, "EAF_summary.txt"), sep="\t", index=False)
+
+
+def plot_source_wads(qsip_object: RS4, output_directory: str, params: dict[str, Any]):
+
+    # for some reason the columns have been converted to lower case
+    qsip_plot = qsip2.plot_source_wads(qsip_object, 
+                           group = params["groups"].lower()) 
+    robjects.r.ggsave(filename=os.path.join(output_directory, "source_wads.png"), 
+                    plot=qsip_plot, 
+                    width=80, 
+                    height=40, 
+                    unit='mm')
+    
+def plot_filter_results(qsip_object: RS4, output_directory: str):
+
+    qsip_plot = qsip2.plot_filter_gradient_position(qsip_object)
+
+    robjects.r.ggsave(filename=os.path.join(output_directory, "filter_results.png"), 
+                    plot=qsip_plot, 
+                    width=300, 
+                    height=150, 
+                    unit='mm')
