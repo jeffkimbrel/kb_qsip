@@ -18,10 +18,6 @@ RUN R -e "\
     quit(status = 1); \
     }"
 
-RUN R -e "remotes::install_github('jeffkimbrel/qSIP2@6edfa61'); \
-    if (!('qSIP2' %in% rownames(installed.packages()))) { quit(status = 1); }; \
-    .libPaths();"
-
 # install python requirements
 WORKDIR /tmp
 COPY ./requirements.txt /tmp/requirements.txt
@@ -30,6 +26,11 @@ RUN ln -s /usr/bin/python3 /usr/bin/python && \
     pip install --upgrade pip && \
     cat /tmp/requirements.txt | sed -e '/^\s*#.*$/d' -e '/^\s*$/d' | xargs -n 1 pip install && \
     cat /tmp/requirements-test.txt | sed -e '/^\s*#.*$/d' -e '/^\s*$/d' | xargs -n 1 pip install
+
+# moving qSIP2 package to the bottom
+RUN R -e "remotes::install_github('jeffkimbrel/qSIP2@af1ef10'); \
+    if (!('qSIP2' %in% rownames(installed.packages()))) { quit(status = 1); }; \
+    .libPaths();"
 
 # copy in the kb_qsip repo
 COPY ./ /kb/module

@@ -5,6 +5,9 @@ from typing import Any
 
 from installed_clients.KBaseReportClient import KBaseReport
 from pandas import DataFrame
+
+from rpy2 import robjects
+from rpy2.robjects import pandas2ri
 from rpy2.robjects.methods import RS4
 
 from kb_qsip.utils import helpers
@@ -42,7 +45,7 @@ class QsipUtil:
         :rtype: ???
         """
         if "debug" in params and params["debug"]:
-            dataframes_by_ref: dict[str, DataFrame | RS4] = (
+            dataframes_by_ref: dict[str, RS4] = (
                 helpers.retrieve_object_dataframes_from_qsip2_data(params)
             )
             # convert these
@@ -51,17 +54,20 @@ class QsipUtil:
             converted_data = helpers.retrieve_convert_objects(
                 params, self.config, self.token
             )
-            dataframes_by_ref: dict[str, DataFrame | RS4] = {}
+            dataframes_by_ref: dict[str, RS4] = {}
             # these can all be converted into dataframes
-            for ref in converted_data:
-                dataframes_by_ref[ref] = DataFrame(converted_data[ref]["dict_list"])
-
-            ## TODO: CONVERT TO RS4 format!
+            with (robjects.default_converter + pandas2ri.converter).context():
+                for ref in converted_data:
+                    dataframes_by_ref[
+                        ref
+                    ] = robjects.conversion.get_conversion().py2rpy(
+                        DataFrame(converted_data[ref]["dict_list"])
+                    )
 
         # qsip object
         qsip_object = helpers.make_qsip_object(dataframes_by_ref, params)
-        logging.info(qsip_object)
+        print(qsip_object)
 
         # do whatever to q
 
-        return qsip_object
+        return {}

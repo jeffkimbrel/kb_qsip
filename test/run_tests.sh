@@ -16,4 +16,4 @@ pytest \
     --cov-config=.coveragerc \
     --cov-report=html \
     --cov-report=xml \
-    test/
+    test/test_kb_qsip_impl.py

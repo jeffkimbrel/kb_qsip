@@ -8,8 +8,11 @@ from combinatrix.fetcher import DataFetcher
 from pandas import DataFrame
 from rpy2.robjects.methods import RS4
 from rpy2.robjects.packages import PackageData, data, importr
+from rpy2.robjects import rl
 
 qsip2 = importr("qSIP2")
+baseR = importr('base')
+dplyr = importr('dplyr')
 
 PARAM_NAMES = ["source", "sample", "feature"]
 
@@ -64,15 +67,22 @@ def retrieve_object_dataframes_from_qsip2_data(
 def make_source_object(source_df: DataFrame | RS4, params: dict[str, Any]) -> RS4:
 
     # validation checks are all run inside qSIP2 R package
+
+    source_df = dplyr.select(source_df, rl('-save_date'))
+
+    # de-MISIPify if necessary
+    source_df = qsip2.remove_isotopolog_label_check(source_df)
+
     return qsip2.qsip_source_data(
         source_df,
         isotope=params["M_isotope"],
-        source_mat_id=params["M_source_mat_id"],
+        source_mat_id="name",
         isotopolog=params["M_isotopolog"],
     )
 
-
 def make_sample_object(sample_df: DataFrame | RS4, params: dict[str, Any]) -> RS4:
+
+    sample_df = dplyr.select(sample_df, rl('-save_date'))
 
     if params["calculate_gradient_pos_rel_amt"]:
 
@@ -89,7 +99,7 @@ def make_sample_object(sample_df: DataFrame | RS4, params: dict[str, Any]) -> RS
     # validation checks are all run inside qSIP2 R package
     return qsip2.qsip_sample_data(
         sample_df,
-        sample_id=params["S_sample_id"],
+        sample_id="name",
         source_mat_id=params["S_source_mat_id"],
         gradient_position=params["S_gradient_position"],
         gradient_pos_density=params["S_gradient_pos_density"],
@@ -101,9 +111,17 @@ def make_sample_object(sample_df: DataFrame | RS4, params: dict[str, Any]) -> RS
 # feature data
 def make_feature_object(feature_df: DataFrame | RS4, params: dict[str, Any]) -> RS4:
 
+    # print(baseR.dim(feature_df))
+    # print(baseR.colnames(feature_df))
+    
+    feature_df = qsip2.pivot_kbase_amplicon_matrix(feature_df)
+
+    # print(baseR.dim(feature_df))
+    # print(baseR.colnames(feature_df))
+
     # validation checks are all run inside qSIP2 R package
     return qsip2.qsip_feature_data(
-        feature_df, feature_id=params["F_feature_ids"], type=params["F_type"]
+        feature_df, feature_id="row_id", type=params["F_type"]
     )
 
 
@@ -113,7 +131,7 @@ def make_qsip_object(
     params: dict[str, Any],
 ) -> RS4:
 
-    source_data = make_source_object(dataframes[params["source_data"]], params)
+    source_data = make_source_object(dataframes[params["source_data"]], params) 
     # logging.info(source_data)
 
     sample_data = make_sample_object(dataframes[params["sample_data"]], params)

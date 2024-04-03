@@ -10,9 +10,9 @@ from combinatrix.constants import DATA, INFO
 from combinatrix.fetcher import DataFetcher
 
 # enable extra vcrpy logging for troubleshooting purposes
-logging.basicConfig()
-vcr_log = logging.getLogger("vcr")
-vcr_log.setLevel(logging.DEBUG)
+#logging.basicConfig()
+# vcr_log = logging.getLogger("vcr")
+# vcr_log.setLevel(logging.DEBUG)
 
 
 @pytest.mark.parametrize("param", INVALID_DATA_FETCHER_PARAMS)
