@@ -27,7 +27,8 @@ class QsipUtil:
         self.config = config
         self.scratch = config['scratch']
         self.context = context
-
+        self.kbr = KBaseReport(self.callback_url)
+        
         self.token: str = context.get("token", "")
         if not self.token:
             err_msg = "Auth token required to access workspace data"
