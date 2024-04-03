@@ -164,10 +164,10 @@ def run_resampling(qsip_object: RS4, params: dict[str, Any]) -> RS4:
     # TODO verify params["resamples"] is an int
 
     qsip_object = qsip2.run_resampling(qsip_object,
-                                       resamples = params["resamples"],
-                                        with_seed = 14,
-                                        allow_failures = True,
-                                        progress = False)
+                                       resamples = int(params["resamples"]),
+                                       with_seed = 14,
+                                       allow_failures = True,
+                                       progress = False)
     
     return qsip_object
 
