@@ -191,6 +191,10 @@ def write_EAF_summary(eaf_summary: DataFrame, output_directory: str):
 
     eaf_summary.to_csv(os.path.join(output_directory, "EAF_summary.txt"), sep="\t", index=False)
 
+    return {'path': output_directory,
+            'name': "EAF_summary.txt",
+            'description': 'Text summary of EAF values'}
+
 
 def plot_source_wads(qsip_object: RS4, output_directory: str, params: dict[str, Any]):
 
@@ -202,6 +206,10 @@ def plot_source_wads(qsip_object: RS4, output_directory: str, params: dict[str, 
                     height=40, 
                     unit='mm')
     
+    return {'path': output_directory,
+            'name': "source_wads.png",
+            'description': 'plot of source wads'}
+    
 def plot_filter_results(qsip_object: RS4, output_directory: str):
 
     qsip_plot = qsip2.plot_filter_gradient_position(qsip_object)
@@ -211,3 +219,7 @@ def plot_filter_results(qsip_object: RS4, output_directory: str):
                     width=300, 
                     height=150, 
                     unit='mm')
+    
+    return {'path': output_directory,
+            'name':  "filter_results.png",
+            'description': 'plot of filtering results'}

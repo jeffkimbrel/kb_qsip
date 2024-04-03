@@ -86,16 +86,19 @@ class QsipUtil:
         qsip_object = helpers.run_EAF_calculations(qsip_object, params)
 
         eaf_summary = helpers.summarize_EAF_values(qsip_object, params)
-        helpers.write_EAF_summary(eaf_summary, output_directory)
+        
+        
+        # reports
+        reports = []
 
-        # plots
-        helpers.plot_source_wads(qsip_object, output_directory, params)
-        helpers.plot_filter_results(qsip_object, output_directory)
+        reports.append(helpers.write_EAF_summary(eaf_summary, output_directory))
+        reports.append(helpers.plot_source_wads(qsip_object, output_directory, params))
+        reports.append(helpers.plot_filter_results(qsip_object, output_directory))
         
 
         report_params = {
             'message': '',
-            'html_links': [],
+            'html_links': reports,
             'direct_html_link_index': 0,
             'objects_created': [],
             'workspace_name': params['workspace_name'],
