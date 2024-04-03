@@ -27,16 +27,81 @@ parameters :
             Source Data
         short-hint : |
             The source data KBase object
+    M_isotope :
+        ui-name : |
+            Source Isotope Column
+        short-hint : |
+            The column header in the source data that contains the isotope data
+    M_isotopolog :
+        ui-name : |
+            Source Isotopolog Column
+        short-hint : |
+            The column header in the source data that contains the isotopolog data
+    groups :
+        ui-name : |
+            Run Group Column
+        short-hint : |
+            A column header in the source data that groups the source material into different qSIP runs
     sample_data :
         ui-name : |
             Sample Data
         short-hint : |
             The sample data KBase object
+    S_source_mat_id :
+        ui-name : |
+            Sample Source Material ID Column
+        short-hint : |
+            The column header in the sample data that contains the source material IDs (should match the source data names)
+    S_gradient_position :
+        ui-name : |
+            Gradient Position Column
+        short-hint : |
+            The column header in the sample data that contains the gradient position as an integer
+    S_gradient_pos_density :
+        ui-name : |
+            Density Column
+        short-hint : |
+            The column header in the sample data that contains the gradient density as a float
+    S_gradient_pos_amt :
+        ui-name : |
+            Total Abundance Column
+        short-hint : |
+            The column header in the sample data that contains the total abundance data as DNA concentration, total qPCR counts, etc
+    S_gradient_pos_rel_amt :
+        ui-name : |
+            Normalized Amount Column
+        short-hint : |
+            The column header in the sample data with relative abundance. If you don't have this it can be calculated from the gradient_pos_rel_amt and setting the checkbox below to true
+    calculate_gradient_pos_rel_amt :
+        ui-name : |
+            Calculate Relative Abundance
+        short-hint : |
+            If selected the gradient_pos_rel_amt field will be calculated from the gradient_pos_rel_amt field. If not selected, then the normalized amount column must be designated above
     feature_data :
         ui-name : |
             Feature Data
         short-hint : |
             The feature data KBase object
+    F_type :
+        ui-name : |
+            Feature Abundance Type
+        short-hint : |
+            How the feature data abundance is represented
+    resamples :
+        ui-name : |
+            Resamples
+        short-hint : |
+            Number of bootstrap resamples to perform
+    resample_success :
+        ui-name : |
+            Resample Success Rate
+        short-hint : |
+            Percent of successful resamples required per feature (0-1)
+    confidence :
+        ui-name : |
+            Confidence Level
+        short-hint : |
+            Confidence level to use for resampling (0-1)
         
 
 description : |

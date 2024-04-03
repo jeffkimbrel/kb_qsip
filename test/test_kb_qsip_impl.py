@@ -21,7 +21,7 @@ PARAMS = {
     "S_gradient_position": "gradient_position",
     "S_gradient_pos_density": "gradient_pos_density",
     "S_gradient_pos_amt": "qpcr.16s.copies.g.soil",
-    "calculate_gradient_pos_rel_amt": False,
+    "calculate_gradient_pos_rel_amt": 0,
     "S_gradient_pos_rel_amt": "gradient_pos_rel_amt",
     # "F" denotes feature_data
     #"F_feature_ids": "row_id",

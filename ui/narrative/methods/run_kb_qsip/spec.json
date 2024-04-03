@@ -22,6 +22,32 @@
             }
           },
           {
+            "id" : "M_isotope",
+            "optional" : true,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "isotope" ],
+            "field_type" : "text",
+            "text_options" : {}
+          },
+          {
+            "id" : "M_isotopolog",
+            "optional" : true,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "isotopolog" ],
+            "field_type" : "text",
+            "text_options" : {}
+          },{
+            "id" : "groups",
+            "optional" : false,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "" ],
+            "field_type" : "text",
+            "text_options" : {}
+          },
+          {
             "id" : "sample_data",
             "optional" : false,
             "advanced" : false,
@@ -33,6 +59,68 @@
             }
           },
           {
+            "id" : "S_source_mat_id",
+            "optional" : true,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "source_mat_id" ],
+            "field_type" : "text",
+            "text_options" : {}
+          },
+          {
+            "id" : "S_gradient_position",
+            "optional" : true,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "gradient_position" ],
+            "field_type" : "text",
+            "text_options" : {}
+          },
+          {
+            "id" : "S_gradient_pos_density",
+            "optional" : true,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "gradient_pos_density" ],
+            "field_type" : "text",
+            "text_options" : {}
+          },
+          {
+            "id" : "S_gradient_pos_amt",
+            "optional" : true,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "gradient_pos_amt" ],
+            "field_type" : "text",
+            "text_options" : {}
+          },
+          {
+            "id" : "S_gradient_pos_rel_amt",
+            "optional" : true,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "gradient_pos_rel_amt" ],
+            "field_type" : "text",
+            "text_options" : {}
+          },
+          {
+            "default_values" : [
+               "0"
+            ],
+            "advanced" : false,
+            "checkbox_options" : {
+               "unchecked_value" : 0,
+               "checked_value" : 1
+            },
+            "text_options" : {
+               "valid_ws_types" : []
+            },
+            "field_type" : "checkbox",
+            "allow_multiple" : false,
+            "optional" : false,
+            "id" : "calculate_gradient_pos_rel_amt"
+          },
+          {
             "id" : "feature_data",
             "optional" : false,
             "advanced" : false,
@@ -42,6 +130,62 @@
             "text_options" : {
               "valid_ws_types" : [ "KBaseMatrices.AmpliconMatrix" ]
             }
+          },{
+            "id" : "F_type",
+            "optional" : false,
+            "advanced" : false,
+            "allow_multiple" : false,
+            "default_values" : [ "counts" ],
+            "field_type" : "dropdown",
+            "dropdown_options":
+            {
+              "options":
+              [
+                {
+                    "display": "counts",
+                    "value": "counts"
+                },
+                {
+                    "display": "coverage",
+                    "value": "coverage"
+                },
+                {
+                    "display": "normalized",
+                    "value": "normalized"
+                },
+                {
+                    "display": "relative",
+                    "value": "relative"
+                }
+              ]
+            }
+          },
+          {
+            "id" : "resamples",
+            "optional" : false,
+            "advanced" : true,
+            "allow_multiple" : false,
+            "default_values" : [ "1000" ],
+            "field_type" : "text",
+            "text_options" : {}
+          },
+          {
+            "id" : "resample_success",
+            "optional" : false,
+            "advanced" : true,
+            "allow_multiple" : false,
+            "default_values" : [ "0.8" ],
+            "field_type" : "text",
+            "text_options" : {}
+          },
+          {
+            "id" : "confidence",
+            "optional" : false,
+            "advanced" : true,
+            "allow_multiple" : false,
+            "default_values" : [ "0.9" ],
+            "field_type" : "text",
+            "text_options" : {}
           }
     ],
     "behavior": {
@@ -61,13 +205,52 @@
                     "target_property": "source_data",
                     "target_type_transform": "resolved-ref"
                 },{
+                    "input_parameter": "M_isotope",
+                    "target_property": "M_isotope"
+                },{
+                    "input_parameter": "M_isotopolog",
+                    "target_property": "M_isotopolog"
+                },{
+                    "input_parameter": "groups",
+                    "target_property": "groups"
+                },{
                     "input_parameter": "sample_data",
                     "target_property": "sample_data",
                     "target_type_transform": "resolved-ref"
                 },{
+                    "input_parameter": "S_source_mat_id",
+                    "target_property": "S_source_mat_id"
+                },{
+                    "input_parameter": "S_gradient_position",
+                    "target_property": "S_gradient_position"
+                },{
+                    "input_parameter": "S_gradient_pos_density",
+                    "target_property": "S_gradient_pos_density"
+                },{
+                    "input_parameter": "S_gradient_pos_amt",
+                    "target_property": "S_gradient_pos_amt"
+                },{
+                    "input_parameter": "S_gradient_pos_rel_amt",
+                    "target_property": "S_gradient_pos_rel_amt"
+                },{
+                    "input_parameter": "calculate_gradient_pos_rel_amt",
+                    "target_property": "calculate_gradient_pos_rel_amt"
+                },{
                     "input_parameter": "feature_data",
                     "target_property": "feature_data",
                     "target_type_transform": "resolved-ref"
+                },{
+                    "input_parameter": "F_type",
+                    "target_property": "F_type"
+                },{
+                    "input_parameter": "resamples",
+                    "target_property": "resamples"
+                },{
+                    "input_parameter": "resample_success",
+                    "target_property": "resample_success"
+                },{
+                    "input_parameter": "confidence",
+                    "target_property": "confidence"
                 }
             ],
             "output_mapping": [

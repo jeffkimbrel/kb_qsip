@@ -84,7 +84,7 @@ def make_sample_object(sample_df: DataFrame | RS4, params: dict[str, Any]) -> RS
 
     sample_df = dplyr.select(sample_df, rl('-save_date'))
 
-    if params["calculate_gradient_pos_rel_amt"]:
+    if params["calculate_gradient_pos_rel_amt"] == 1:
 
         # If relative amounts are not already calculated, then do this now
         sample_df = qsip2.add_gradient_pos_rel_amt(
