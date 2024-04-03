@@ -27,7 +27,7 @@ PARAMS = {
     #"F_feature_ids": "row_id",
     "F_type": "relative",
     # Analysis
-    "groups": "TIME",
+    "groups": "time",
     # these may come in as text and so need to be converted to numeric
     "resamples": 1000,
     "resample_success": 0.8,

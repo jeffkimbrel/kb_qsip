@@ -107,7 +107,7 @@ def make_sample_object(sample_df: DataFrame | RS4, params: dict[str, Any]) -> RS
         source_mat_id=params["S_source_mat_id"],
         gradient_position=params["S_gradient_position"],
         gradient_pos_density=params["S_gradient_pos_density"],
-        gradient_pos_amt=params["S_gradient_pos_amt"].lower(), # also convert to lower case for some reason
+        gradient_pos_amt=params["S_gradient_pos_amt"], 
         gradient_pos_rel_amt=params["S_gradient_pos_rel_amt"],
     )
 
@@ -180,7 +180,7 @@ def summarize_EAF_values(qsip_object: RS4, params: dict[str, Any]) -> DataFrame:
     # TODO verify params["confidence"] is a float between 0-1
 
     eaf_summary = qsip2.summarize_EAF_values(qsip_object, 
-                                             confidence = params["confidence"])
+                                             confidence = float(params["confidence"]))
     
     with (robjects.default_converter + pandas2ri.converter).context():
         pd_EAF_summary = robjects.conversion.get_conversion().rpy2py(eaf_summary)
@@ -194,9 +194,8 @@ def write_EAF_summary(eaf_summary: DataFrame, output_directory: str):
 
 def plot_source_wads(qsip_object: RS4, output_directory: str, params: dict[str, Any]):
 
-    # for some reason the columns have been converted to lower case
     qsip_plot = qsip2.plot_source_wads(qsip_object, 
-                           group = params["groups"].lower()) 
+                           group = params["groups"]) 
     robjects.r.ggsave(filename=os.path.join(output_directory, "source_wads.png"), 
                     plot=qsip_plot, 
                     width=80, 
