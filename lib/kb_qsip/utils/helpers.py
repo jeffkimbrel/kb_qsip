@@ -224,7 +224,7 @@ def plot_filter_results(qsip_object: RS4, output_directory: str):
             'name':  "filter_results.png",
             'description': 'plot of filtering results'}
 
-def plot_EAF_results(qsip_object: RS4, output_directory: str):
+def plot_EAF_results(qsip_object: RS4, output_directory: str, params: dict[str, Any]):
 
     qsip_plot = qsip2.plot_EAF_values(qsip_object,
                                       confidence = float(params["confidence"]),
