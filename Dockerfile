@@ -28,7 +28,7 @@ RUN ln -s /usr/bin/python3 /usr/bin/python && \
     cat /tmp/requirements-test.txt | sed -e '/^\s*#.*$/d' -e '/^\s*$/d' | xargs -n 1 pip install
 
 # moving qSIP2 package to the bottom
-RUN R -e "remotes::install_github('jeffkimbrel/qSIP2@a1e33fe'); \
+RUN R -e "remotes::install_github('jeffkimbrel/qSIP2@0bf23f7'); \
     if (!('qSIP2' %in% rownames(installed.packages()))) { quit(status = 1); }; \
     .libPaths();"
 

@@ -223,3 +223,21 @@ def plot_filter_results(qsip_object: RS4, output_directory: str):
     return {'path': output_directory,
             'name':  "filter_results.png",
             'description': 'plot of filtering results'}
+
+def plot_EAF_results(qsip_object: RS4, output_directory: str):
+
+    qsip_plot = qsip2.plot_EAF_values(qsip_object,
+                                      confidence = float(params["confidence"]),
+                                      success_ratio = float(params["resample_success"]),
+                                      error = "ribbon",
+                                      alpha = 0.3)
+
+    robjects.r.ggsave(filename=os.path.join(output_directory, "EAF_plot.png"), 
+                    plot=qsip_plot, 
+                    width=300, 
+                    height=600, 
+                    unit='mm')
+    
+    return {'path': output_directory,
+            'name':  "EAF_plot.png",
+            'description': 'EAF results plot with confidence ribbon'}

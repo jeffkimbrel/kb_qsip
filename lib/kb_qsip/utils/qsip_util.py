@@ -94,6 +94,7 @@ class QsipUtil:
         reports.append(helpers.write_EAF_summary(eaf_summary, output_directory))
         reports.append(helpers.plot_source_wads(qsip_object, output_directory, params))
         reports.append(helpers.plot_filter_results(qsip_object, output_directory))
+        reports.append(helpers.plot_EAF_results(qsip_object, output_directory))
         
 
         report_params = {
